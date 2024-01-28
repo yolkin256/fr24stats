@@ -2,43 +2,19 @@ package entity
 
 import (
 	"context"
-	"database/sql"
+	"github.com/uptrace/bun"
 )
 
 type FlightRepository struct {
-	db *sql.DB
+	db *bun.DB
 }
 
-func NewFlightRepository(db *sql.DB) *FlightRepository {
+func NewFlightRepository(db *bun.DB) *FlightRepository {
 	return &FlightRepository{db: db}
 }
 
-func (r *FlightRepository) Save(ctx context.Context, flight Flight) error {
-	_, err := r.db.ExecContext(
-		ctx,
-		`INSERT INTO flight VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
-		flight.FRID,
-		flight.ICAORegistration,
-		flight.ICAOModel,
-		flight.Latitude,
-		flight.Longitude,
-		flight.Heading,
-		flight.Altitude,
-		flight.Speed,
-		flight.SquawkCode,
-		flight.RadarID,
-		flight.Registration,
-		flight.Timestamp,
-		flight.Origin,
-		flight.Destination,
-		flight.FlightNumber,
-		flight.RateOfClimb,
-		flight.CallSign,
-		flight.Company,
-		flight.IsOnGround,
-		flight.IsGlider,
-		flight.CreatedAt,
-	)
+func (r *FlightRepository) Save(ctx context.Context, flights []Flight) error {
+	_, err := r.db.NewInsert().Model(&flights).Exec(ctx)
 	if err != nil {
 		return err
 	}

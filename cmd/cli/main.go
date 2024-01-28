@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fr24stats/cmd/cli/commands"
 	"github.com/fatih/color"
 	"github.com/go-pkgz/lgr"
@@ -9,6 +10,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
+	"time"
+)
+
+const (
+	timeout = 10 * time.Minute
 )
 
 func main() {
@@ -17,18 +23,21 @@ func main() {
 		log.Fatalf("[FATAL] Ошибка загрузки .env файла: %v", err)
 	}
 
-	cfg := commands.Config{
-		DBFILE: os.Getenv("FR24_STATS_DB"),
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	cfg := commands.AppConfig{
+		DBFile: os.Getenv("FR24_STATS_DB"),
 	}
 
 	rootCmd := commands.NewRootCmd()
-	rootCmd.AddCommand(commands.NewMigrationCmd())
+	rootCmd.AddCommand(commands.NewMigrationCmd(cfg))
 	rootCmd.AddCommand(commands.NewScrapeCmd(cfg))
 
-	if err := rootCmd.Execute(); err != nil {
+	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		log.Printf("[ERROR] Ошибка выполнения команды: %v", err)
 	} else {
-		log.Printf("[INFO] Операция успешно завершена\n")
+		log.Printf("[INFO] Операция завершена")
 	}
 }
 

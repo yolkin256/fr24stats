@@ -1,28 +1,32 @@
 package entity
 
-import "time"
+import (
+	"github.com/uptrace/bun"
+	"time"
+)
 
 type Flight struct {
-	ID               int     // ID
-	FRID             string  // FlightRadar24 ID
-	ICAORegistration string  // ICAO 24-bit address The ICAO24 code (sometimes called the Mode S code) is a 24-bit unique number that is assigned to each vehicle or object that can transmit ADS-B messages. It is usually transmitted by aircraft but some airport ground vehicles and multilateration towers also have ICAO24 codes assigned to them.
-	Latitude         float64 // Latitude
-	Longitude        float64 // Longitude
-	Heading          uint8   // Heading in degrees
-	Altitude         uint    // Altitude in feet
-	Speed            uint    // Speed in knots
-	SquawkCode       string  // Squawk code
-	RadarID          string  // Radar ID
-	ICAOModel        string  // ICAO model type
-	Registration     string  // Registration
-	Timestamp        int64   // Timestamp
-	Origin           string  // Origin airport IATA code
-	Destination      string  // Destination airport IATA code
-	FlightNumber     string  // Flight number
-	IsOnGround       bool    // Is on ground
-	RateOfClimb      uint    // Rate of climb in feet per minute
-	CallSign         string  // Callsign
-	IsGlider         bool    // Is glider
-	Company          string  // Company
-	CreatedAt        time.Time
+	ID               int       `bun:",pk,autoincrement"`
+	FRID             string    `bun:"fr_id"`         // FlightRadar24 ID
+	ICAORegistration string    `bun:"icao_reg"`      // ICAO 24-bit address The ICAO24 code (sometimes called the Mode S code) is a 24-bit unique number that is assigned to each vehicle or object that can transmit ADS-B messages. It is usually transmitted by aircraft but some airport ground vehicles and multilateration towers also have ICAO24 codes assigned to them.
+	Latitude         float64   `bun:"lat"`           // Latitude
+	Longitude        float64   `bun:"lon"`           // Longitude
+	Heading          uint8     `bun:"heading"`       // Heading in degrees
+	Altitude         uint      `bun:"alt"`           // Altitude in feet
+	Speed            uint      `bun:"speed"`         // Speed in knots
+	SquawkCode       string    `bun:"squawk_code"`   // Squawk code
+	RadarID          string    `bun:"radar_id"`      // Radar ID
+	ICAOModel        string    `bun:"icao_model"`    // ICAO model type
+	Registration     string    `bun:"registration"`  // Registration
+	Timestamp        int64     `bun:"timestamp"`     // Timestamp
+	Origin           string    `bun:"origin"`        // Origin airport IATA code
+	Destination      string    `bun:"destination"`   // Destination airport IATA code
+	FlightNumber     string    `bun:"flight_number"` // Flight number
+	IsOnGround       bool      `bun:"is_on_ground"`  // Is on ground
+	RateOfClimb      uint      `bun:"is_glider"`     // Rate of climb in feet per minute
+	CallSign         string    `bun:"call_sign"`     // Callsign
+	IsGlider         bool      `bun:"is_glider"`     // Is glider
+	Company          string    `bun:"company"`       // Company
+	CreatedAt        time.Time `bun:"created_at"`
+	bun.BaseModel    `bun:"table:flight,alias:f"`
 }

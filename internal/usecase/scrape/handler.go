@@ -29,8 +29,9 @@ func (h *Handler) Handle(ctx context.Context, cmd Cmd) error {
 
 	log.Printf("[INFO] Получено %d записей о полётах для авиалинии %s\n", len(res.Flights), cmd.Airline)
 
+	flights := make([]entity.Flight, 0, len(res.Flights))
 	for _, f := range res.Flights {
-		if err := h.repository.Save(ctx, entity.Flight{
+		flights = append(flights, entity.Flight{
 			FRID:             f.ID,
 			ICAORegistration: f.ICAORegistration,
 			Latitude:         f.Latitude,
@@ -52,9 +53,11 @@ func (h *Handler) Handle(ctx context.Context, cmd Cmd) error {
 			IsGlider:         f.IsGlider,
 			Company:          f.Company,
 			CreatedAt:        time.Now(),
-		}); err != nil {
-			return err
-		}
+		})
+	}
+
+	if err := h.repository.Save(ctx, flights); err != nil {
+		return err
 	}
 
 	return nil
