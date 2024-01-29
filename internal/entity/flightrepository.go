@@ -14,6 +14,10 @@ func NewFlightRepository(db *bun.DB) *FlightRepository {
 }
 
 func (r *FlightRepository) Save(ctx context.Context, flights []Flight) error {
+	if len(flights) == 0 {
+		return nil
+	}
+
 	_, err := r.db.NewInsert().Model(&flights).Exec(ctx)
 	if err != nil {
 		return err

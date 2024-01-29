@@ -1,3 +1,6 @@
+PWD=$(shell pwd)
+USER=$(shell id -u)
+
 .PHONY: all
 
 all: install_deps fmt build
