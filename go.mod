@@ -4,7 +4,7 @@ go 1.21.6
 
 require (
 	github.com/fatih/color v1.16.0
-	github.com/genericplatform/flightradar24sdk v0.0.1-alpha
+	github.com/genericplatform/flightradar24sdk v0.0.2-alpha
 	github.com/go-pkgz/lgr v0.11.1
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.20

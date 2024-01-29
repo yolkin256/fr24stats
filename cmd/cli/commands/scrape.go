@@ -29,7 +29,10 @@ func NewScrapeCmd(cfg AppConfig) *cobra.Command {
 			log.Println("[INFO] Запуск сохранения данных о полётах в БД")
 
 			handler := scrape.NewHandler(
-				flightradar24sdk.NewAPI(nil),
+				flightradar24sdk.NewAPI(
+					flightradar24sdk.WithDebug(Verbose),
+					flightradar24sdk.WithLogger(createAPIClientLogger()),
+				),
 				entity.NewFlightRepository(db),
 			)
 

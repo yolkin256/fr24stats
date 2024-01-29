@@ -8,6 +8,7 @@ import (
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 	"github.com/uptrace/bun/driver/sqliteshim"
 	"github.com/uptrace/bun/extra/bundebug"
+	"log"
 )
 
 var Verbose bool
@@ -38,4 +39,20 @@ func initDB(cfg AppConfig) (*bun.DB, error) {
 		))
 	}
 	return db, nil
+}
+
+type apiLogger struct{}
+
+func (l *apiLogger) Errorf(format string, v ...interface{}) {
+	log.Printf("[ERROR]"+format, v)
+}
+func (l *apiLogger) Warnf(format string, v ...interface{}) {
+	log.Printf("[WARN]"+format, v)
+}
+func (l *apiLogger) Debugf(format string, v ...interface{}) {
+	log.Printf("[DEBUG]"+format, v)
+}
+
+func createAPIClientLogger() *apiLogger {
+	return &apiLogger{}
 }
