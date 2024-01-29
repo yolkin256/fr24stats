@@ -14,7 +14,7 @@ func Run(db *sql.DB) error {
 	goose.SetBaseFS(embedMigrations)
 
 	if err := goose.SetDialect("sqlite3"); err != nil {
-		panic(err)
+		return err
 	}
 
 	if err := goose.Up(db, "sql"); err != nil {
