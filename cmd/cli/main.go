@@ -20,14 +20,19 @@ const (
 func main() {
 	setupLog()
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("[FATAL] Ошибка загрузки .env файла: %v", err)
+		log.Printf("[DEBUG] .env файл не найден: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	dbFile := os.Getenv("FR24_STATS_DB")
+	if dbFile == "" {
+		log.Fatal("[FATAL] не найден путь к БД (в .env-файле или переменной окружения)") //nolint:gocritic
+	}
+
 	cfg := commands.AppConfig{
-		DBFile: os.Getenv("FR24_STATS_DB"),
+		DBFile: dbFile,
 	}
 
 	rootCmd := commands.NewRootCmd()
