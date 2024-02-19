@@ -15,7 +15,7 @@ func NewScrapeCmd(cfg AppConfig) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scrape",
 		Short: "Получение данных о полётах",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			if airline == "" {
 				return errors.New("не указан код авиалинии")
 			}

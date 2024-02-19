@@ -3,7 +3,7 @@ package commands
 import (
 	"database/sql"
 	"fmt"
-	"fr24stats/migrations"
+	"fr24stats/internal/util"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -14,7 +14,7 @@ func NewMigrationCmd(cfg AppConfig) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "migrate",
 		Short: "Раскатка миграций БД",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			log.Println("[INFO] Запуск миграций")
 
 			db, err := sql.Open("sqlite3", cfg.DBFile)
@@ -22,7 +22,7 @@ func NewMigrationCmd(cfg AppConfig) *cobra.Command {
 				return fmt.Errorf("ошибка открытия БД: %w", err)
 			}
 
-			return migrations.Run(db, path)
+			return util.RunMigrations(db, path)
 		},
 	}
 

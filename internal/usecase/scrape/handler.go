@@ -30,6 +30,7 @@ func (h *Handler) Handle(ctx context.Context, cmd Cmd) error {
 	log.Printf("[INFO] Получено %d записей о полётах для авиалинии %s\n", len(res.Flights), cmd.Airline)
 
 	flights := make([]entity.Flight, 0, len(res.Flights))
+	now := time.Now()
 	for _, f := range res.Flights {
 		flights = append(flights, entity.Flight{
 			FRID:             f.ID,
@@ -52,7 +53,7 @@ func (h *Handler) Handle(ctx context.Context, cmd Cmd) error {
 			CallSign:         f.CallSign,
 			IsGlider:         f.IsGlider,
 			Company:          f.Company,
-			CreatedAt:        time.Now(),
+			CreatedAt:        now,
 		})
 	}
 
