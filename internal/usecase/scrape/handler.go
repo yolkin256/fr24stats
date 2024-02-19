@@ -3,9 +3,14 @@ package scrape
 import (
 	"context"
 	"fr24stats/internal/entity"
+	"fr24stats/internal/util"
 	"github.com/genericplatform/flightradar24sdk"
 	"log"
 	"time"
+)
+
+const (
+	insertChunkSize = 5
 )
 
 type Cmd struct {
@@ -26,8 +31,6 @@ func (h *Handler) Handle(ctx context.Context, cmd Cmd) error {
 	if err != nil {
 		return err
 	}
-
-	log.Printf("[INFO] Получено %d записей о полётах для авиалинии %s\n", len(res.Flights), cmd.Airline)
 
 	flights := make([]entity.Flight, 0, len(res.Flights))
 	now := time.Now()
@@ -57,8 +60,14 @@ func (h *Handler) Handle(ctx context.Context, cmd Cmd) error {
 		})
 	}
 
-	if err := h.repository.Save(ctx, flights); err != nil {
-		return err
+	log.Printf("[INFO] Получено %d записей о полётах для авиалинии %s\n", len(flights), cmd.Airline)
+
+	chunks := util.SliceChunk(flights, insertChunkSize)
+	for _, chunk := range chunks {
+		if err := h.repository.Save(ctx, chunk); err != nil {
+			log.Printf("[ERROR] Ошибка сохранения данных о полётах: %v", err)
+			continue
+		}
 	}
 
 	return nil
