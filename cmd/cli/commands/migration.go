@@ -10,7 +10,8 @@ import (
 )
 
 func NewMigrationCmd(cfg AppConfig) *cobra.Command {
-	return &cobra.Command{
+	var path string
+	cmd := &cobra.Command{
 		Use:   "migrate",
 		Short: "Раскатка миграций БД",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -21,7 +22,11 @@ func NewMigrationCmd(cfg AppConfig) *cobra.Command {
 				return fmt.Errorf("ошибка открытия БД: %w", err)
 			}
 
-			return migrations.Run(db)
+			return migrations.Run(db, path)
 		},
 	}
+
+	cmd.Flags().StringVarP(&path, "path", "", "", "Путь к директории с миграциями")
+
+	return cmd
 }
